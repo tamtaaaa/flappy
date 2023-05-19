@@ -5,6 +5,13 @@ Class = require 'class'
 
 require 'Bird'
 require 'Pipe'
+require 'Pipes'
+
+require 'StateMachine'
+
+require 'states/BaseState'
+require 'states/StartState'
+require 'states/PlayState'
 
 
 WINDOW_WIDTH = 1280
@@ -26,7 +33,7 @@ local GROUND_SCROLL_SPEED = 60
 local LOOPING_POINT = 313
 
 local bird = Bird()
-local pipes = {}
+local pipePairs = {}
 
 local spawnTimer = 0
 
@@ -45,6 +52,14 @@ function love.load()
 	
 	})
 	
+	
+	stateMachine = StateMachine {
+		['start'] = function() return StartState() end,
+		['play'] = function() return PlayState() end
+	}
+	
+	stateMachine:change('start')
+	
 	love.keyboard.keysPressed = {}
 	
 end
@@ -52,19 +67,7 @@ end
 function love.update(dt)
 	background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % LOOPING_POINT
 	ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % LOOPING_POINT
-	
-	spawnTimer = spawnTimer + dt
-	
-	if spawnTimer > 2 then
-		table.insert(pipes, Pipe())
-		spawnTimer = 0
-	end
-	
-	for k, pipe in pairs(pipes) do
-		pipe:update(dt)
-	end
-	
-	bird:update(dt)
+	stateMachine:update(dt)
 	
 	love.keyboard.keysPressed = {}
 end
@@ -100,13 +103,10 @@ function love.draw()
 	
 	love.graphics.draw(background, -background_scroll, 0)
 	
-	for k, pipe in pairs(pipes) do
-		pipe:render()
-	end
+	stateMachine:render()
 	
 	love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 20)
 	
-	bird:render()
 	
 	push:finish()
 end
