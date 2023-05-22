@@ -4,7 +4,7 @@ function StateMachine:init(states)
 	self.state = {
 		render = function() end,
 		update = function() end,
-		start = function() end,
+		enter = function() end,
 		exit = function() end
 	}
 	self.states = states or {}

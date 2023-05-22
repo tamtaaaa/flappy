@@ -5,13 +5,16 @@ local GAP = 100
 function Pipes:init(x, y)
 	self.x = x
 	self.y = y
+	self.image = love.graphics.newImage('pipe.png')
+	self.pipeheight = self.image:getHeight()
 	
 	self.pipes = {
 		['top-pipe'] = Pipe('top', self.y),
-		['bottom-pipe'] = Pipe('bottom', self.y - GAP)
+		['bottom-pipe'] = Pipe('bottom', self.y + self.pipeheight + GAP)
 	}
 	
 	self.remove = false
+	self.scored = false
 end
 
 function Pipes:update(dt)

@@ -12,6 +12,7 @@ require 'StateMachine'
 require 'states/BaseState'
 require 'states/StartState'
 require 'states/PlayState'
+require 'states/ScoreState'
 
 
 WINDOW_WIDTH = 1280
@@ -45,6 +46,10 @@ function love.load()
 	love.window.setTitle('Flappy')
 	
 	
+	mediumFont = love.graphics.newFont('font.ttf', 16)
+	scoreFont = love.graphics.newFont('font.ttf', 28)
+	
+	
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
 		vsync = true,
 		fullscreen = false,
@@ -55,7 +60,8 @@ function love.load()
 	
 	stateMachine = StateMachine {
 		['start'] = function() return StartState() end,
-		['play'] = function() return PlayState() end
+		['play'] = function() return PlayState() end,
+		['score'] = function() return ScoreState() end
 	}
 	
 	stateMachine:change('start')
